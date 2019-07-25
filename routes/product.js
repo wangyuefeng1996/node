@@ -34,10 +34,59 @@ router.get("/list",function(req,res){
 });
 
 //2.商品详情
+router.get("/detail",function(req,res){
+	if(!req.query.lid){
+		res.send({
+			code:401,
+			msg:"lid required"
+		});
+		return;
+	}
+	var lid=parseInt(req.query.lid);
+	pool.query(`SELECT * FROM xz_laptop WHERE lid=?`,[lid],function(err,result){
+		if(err) throw err;
+		if(result.length>0){
+			res.send({
+				code:200,
+				msg:"select suc"
+			});
+		}else{
+			res.send({
+				code:301,
+				msg:"select err"
+			});
+		}
+	});
+});
+
+//3.商品删除
+router.get("/delete",function(req,res){
+	if(!req.query.lid){
+		res.send({
+			code:401,
+			msg:"lid required"
+		});
+		return;
+	}
+	var lid=parseInt(req.query.lid);
+	pool.query(`DELETE FROM xz_laptop WHERE lid=?`,[lid],function(err,result){
+		if(err) throw err;
+		if(result.affectedRows>0){
+			res.send({
+				code:200,
+				msg:"delete suc"
+			});
+		}else{
+			res.send({
+				code:301,
+				msg:"delete err"
+			});
+		}
+	});
+});
 
 
-/*
-//3.商品添加
+//4.商品添加
 router.post("/add",function(req,res){
 	var obj=req.body;
 	//console.log(obj)
@@ -45,7 +94,7 @@ router.post("/add",function(req,res){
 	obj.family_id=parseInt(obj.family_id);
 	obj.price=parseFloat(obj.price);
 	obj.shelf_time=parseInt(obj.shelf_time);
-	obj.sold_count=parseInt(obj.prsold_countice);
+	obj.sold_count=parseInt(obj.sold_count);
 	obj.is_onsale=parseInt(obj.is_onsale);
 	var count=400;//初始化返回码
 	for(var key in obj){
@@ -67,7 +116,7 @@ router.post("/add",function(req,res){
 			});
 		}
 	});
-});*/
+});
 
 
 //导出router
